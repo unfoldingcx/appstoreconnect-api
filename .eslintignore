@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+*.config.js
+metro.config.js
+babel.config.js
+*.log
+.git/
+.vscode/
+.idea/
+.prettierrc
+.prettierrc-plugins
+.eslintignore

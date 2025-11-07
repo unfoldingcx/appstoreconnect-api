@@ -1,17 +1,44 @@
 {
   "name": "appstoreconnect-api",
-  "module": "index.ts",
+  "module": "src/index.ts",
   "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "format": "prettier --write \"**/*.{ts,json,md}\"",
+    "lint:fix": "prettier --write \"{src}/**/*.{ts}\" && eslint \"{src}/**/*.{ts}\" --fix --quiet"
+  },
   "devDependencies": {
     "@types/axios": "^0.14.4",
     "@types/bun": "latest",
-    "@types/lodash": "^4.17.20"
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/lodash": "^4.17.20",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
+    "esbuild-plugin-ts-decorators": "^1.0.3",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-eqeqeq-fix": "^1.0.3",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jest": "^29.0.1",
+    "eslint-plugin-n": "^17.23.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-promise": "^7.2.1",
+    "eslint-plugin-security": "^3.0.1",
+    "eslint-plugin-standard": "^5.0.0",
+    "eslint-plugin-unused-imports": "^4.3.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "typescript-eslint": "^8.46.3"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "axios": "^1.13.2",
+    "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "util": "^0.12.5"
   }
