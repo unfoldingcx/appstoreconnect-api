@@ -28,16 +28,6 @@ export class AppStoreConnect implements INodeType {
       {
         name: 'appStoreConnectApi',
         required: true,
-        displayOptions: {
-          show: {
-            operation: [
-              'submit',
-              'getBuilds',
-              'cancel',
-              'generateReleaseNotes',
-            ],
-          },
-        },
       },
     ],
     properties: [
@@ -46,19 +36,8 @@ export class AppStoreConnect implements INodeType {
         name: 'operation',
         type: 'options',
         noDataExpression: true,
+        required: true,
         options: [
-          {
-            name: 'Cancel Pending Submissions',
-            value: 'cancel',
-            description: 'Cancel any pending App Review submissions',
-            action: 'Cancel pending submissions',
-          },
-          {
-            name: 'Generate AI Release Notes',
-            value: 'generateReleaseNotes',
-            description: 'Generate release notes from git commits using AI',
-            action: 'Generate AI release notes',
-          },
           {
             name: 'Get Builds',
             value: 'getBuilds',
@@ -71,8 +50,20 @@ export class AppStoreConnect implements INodeType {
             description: 'Submit an app version to App Review',
             action: 'Submit to review',
           },
+          {
+            name: 'Cancel Pending Submissions',
+            value: 'cancel',
+            description: 'Cancel any pending App Review submissions',
+            action: 'Cancel pending submissions',
+          },
+          {
+            name: 'Generate AI Release Notes',
+            value: 'generateReleaseNotes',
+            description: 'Generate release notes from git commits using AI',
+            action: 'Generate AI release notes',
+          },
         ],
-        default: 'submit',
+        default: 'getBuilds',
       },
       // ============ Submit Operation ============
       {
@@ -242,12 +233,12 @@ export class AppStoreConnect implements INodeType {
     console.log('[ASCA] ========================================')
     console.log('[ASCA] Main Node Execute Method Called')
     console.log('[ASCA] ========================================')
-    
+
     const items = this.getInputData()
     const returnData: INodeExecutionData[] = []
     const length = items.length
     let responseData
-    
+
     console.log('[ASCA] Processing', length, 'item(s)')
 
     for (let i = 0; i < length; i++) {

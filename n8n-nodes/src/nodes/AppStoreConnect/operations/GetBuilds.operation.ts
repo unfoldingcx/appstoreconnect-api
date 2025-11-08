@@ -1,27 +1,28 @@
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
+import * as fs from 'fs'
+import * as os from 'os'
+import * as path from 'path'
+
+import {
+	getBuilds,
+} from '@unfoldingcx/appstoreconnect-api'
 import {
 	IExecuteFunctions,
 	INodeExecutionData,
-} from 'n8n-workflow';
-import {
-	getBuilds,
-} from '@unfoldingcx/appstoreconnect-api';
+} from 'n8n-workflow'
 
 export async function executeGetBuildsOperation(
 	this: IExecuteFunctions,
 	index: number,
 ): Promise<INodeExecutionData[]> {
 	const logs: string[] = []
-	
+
 	logs.push('========================================')
 	logs.push('EXECUTING: Get Builds Operation')
 	logs.push('========================================')
-	
+
 	const credentials = await this.getCredentials('appStoreConnectApi')
 	const limit = this.getNodeParameter('limit', index, 10) as number
-	
+
 	logs.push(`Parameters: limit=${limit}`)
 	logs.push(`Credentials loaded: issuerId=${credentials.issuerId}, keyId=${credentials.keyId}, appId=${credentials.appId}, hasPrivateKey=${!!(credentials.privateKey)}`)
 
@@ -44,7 +45,7 @@ export async function executeGetBuildsOperation(
 			limit
 		)
 		const duration = Date.now() - startTime
-		
+
 		logs.push(`API Response received in ${duration}ms: Found ${builds.length} builds`)
 		logs.push(`Returning ${Math.min(limit, builds.length)} builds`)
 
@@ -66,7 +67,7 @@ export async function executeGetBuildsOperation(
 				},
 			} as INodeExecutionData,
 		]
-		
+
 		logs.push('Operation completed successfully')
 		return response
 	} catch (error) {
@@ -74,7 +75,7 @@ export async function executeGetBuildsOperation(
 		if (error instanceof Error && error.stack) {
 			logs.push(`Stack: ${error.stack}`)
 		}
-		
+
 		return [
 			{
 				json: {
