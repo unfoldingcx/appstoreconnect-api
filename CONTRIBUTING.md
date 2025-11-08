@@ -6,14 +6,26 @@ The following is a set of guidelines for contributing to the App Store Connect A
 
 ## Table of Contents
 
-- [Code of Conduct](#code-of-conduct)
-- [How Can I Contribute?](#how-can-i-contribute)
-  - [Reporting Bugs](#reporting-bugs)
-  - [Suggesting Enhancements](#suggesting-enhancements)
-  - [Pull Requests](#pull-requests)
-- [Development Setup](#development-setup)
-- [Style Guidelines](#style-guidelines)
-- [Commit Messages](#commit-messages)
+- [Contributing to App Store Connect API](#contributing-to-app-store-connect-api)
+  - [Table of Contents](#table-of-contents)
+  - [Code of Conduct](#code-of-conduct)
+  - [How Can I Contribute?](#how-can-i-contribute)
+    - [Reporting Bugs](#reporting-bugs)
+    - [Suggesting Enhancements](#suggesting-enhancements)
+    - [Pull Requests](#pull-requests)
+  - [Development Setup](#development-setup)
+  - [Style Guidelines](#style-guidelines)
+    - [TypeScript Style Guide](#typescript-style-guide)
+    - [Code Formatting](#code-formatting)
+    - [Documentation](#documentation)
+    - [Example of Good Documentation:](#example-of-good-documentation)
+  - [Commit Messages](#commit-messages)
+    - [Good commit messages:](#good-commit-messages)
+    - [Bad commit messages:](#bad-commit-messages)
+    - [Commit Message Format:](#commit-message-format)
+  - [Testing](#testing)
+  - [Questions?](#questions)
+  - [Recognition](#recognition)
 
 ## Code of Conduct
 
@@ -60,7 +72,7 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 1. **Clone your fork:**
    ```bash
-   git clone https://github.com/YOUR-USERNAME/appstoreconnect-api.git
+   git clone https://github.com/unfoldingcx/appstoreconnect-api.git
    cd appstoreconnect-api
    ```
 
@@ -192,8 +204,8 @@ If you add new functionality, please add tests:
 ## Questions?
 
 Feel free to open an issue with your question or reach out via:
-- GitHub Issues: [github.com/yourusername/appstoreconnect-api/issues](https://github.com/yourusername/appstoreconnect-api/issues)
-- GitHub Discussions: [github.com/yourusername/appstoreconnect-api/discussions](https://github.com/yourusername/appstoreconnect-api/discussions)
+- GitHub Issues: [github.com/unfoldingcx/appstoreconnect-api/issues](https://github.com/unfoldingcx/appstoreconnect-api/issues)
+- GitHub Discussions: [github.com/unfoldingcx/appstoreconnect-api/discussions](https://github.com/unfoldingcx/appstoreconnect-api/discussions)
 
 ## Recognition
 

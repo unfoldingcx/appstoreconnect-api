@@ -57,7 +57,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install appstoreconnect-api
+        run: npm install @unfoldingcx/appstoreconnect-api
 
       - name: Create private key file
         env:
@@ -79,7 +79,7 @@ jobs:
           PLATFORM: ${{ github.event.inputs.platform }}
         run: |
           node -e "
-            const { submitToAppReview } = require('appstoreconnect-api');
+            const { submitToAppReview } = require('@unfoldingcx/appstoreconnect-api');
             
             submitToAppReview({
               issuerId: process.env.ASC_ISSUER_ID,

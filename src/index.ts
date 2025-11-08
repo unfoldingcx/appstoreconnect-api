@@ -5,13 +5,13 @@
  * Handles the entire review submission workflow including version management, build association,
  * release notes, and intelligent error recovery with automatic retry mechanisms.
  * 
- * @module appstoreconnect-api
- * @author Your Name
+ * @module @unfoldingcx/appstoreconnect-api
+ * @author JOAO PEDRO BARBOSA VIANA <pitter@unfolding.cx>
  * @license MIT
  * 
  * @example
  * ```typescript
- * import { submitToAppReview, getBuilds } from 'appstoreconnect-api'
+ * import { submitToAppReview, getBuilds } from '@unfoldingcx/appstoreconnect-api'
  * 
  * // Submit your app for review
  * await submitToAppReview({
@@ -434,7 +434,7 @@ export async function cancelPendingReviewSubmissions(
  * 
  * @example Basic usage
  * ```typescript
- * import { submitToAppReview } from 'appstoreconnect-api'
+ * import { submitToAppReview } from '@unfoldingcx/appstoreconnect-api'
  * 
  * try {
  *   await submitToAppReview({
@@ -456,7 +456,7 @@ export async function cancelPendingReviewSubmissions(
  * 
  * @example With environment variables
  * ```typescript
- * import { submitToAppReview } from 'appstoreconnect-api'
+ * import { submitToAppReview } from '@unfoldingcx/appstoreconnect-api'
  * import * as path from 'path'
  * 
  * await submitToAppReview({
@@ -474,7 +474,7 @@ export async function cancelPendingReviewSubmissions(
  * 
  * @example With build discovery
  * ```typescript
- * import { submitToAppReview, getBuilds } from 'appstoreconnect-api'
+ * import { submitToAppReview, getBuilds } from '@unfoldingcx/appstoreconnect-api'
  * 
  * const jwtOptions = {
  *   issuerId: 'your-issuer-id',

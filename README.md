@@ -1,6 +1,6 @@
 # 🚀 App Store Connect API - Automated Review Submission
 
-[![npm version](https://img.shields.io/npm/v/appstoreconnect-api.svg)](https://www.npmjs.com/package/appstoreconnect-api)
+[![npm version](https://img.shields.io/npm/v/@unfoldingcx/appstoreconnect-api.svg)](https://www.npmjs.com/package/appstoreconnect-api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 
@@ -20,13 +20,13 @@ A powerful, production-ready TypeScript library for automating Apple App Store C
 ## 📦 Installation
 
 ```bash
-npm install appstoreconnect-api
+npm install @unfoldingcx/appstoreconnect-api
 ```
 
 Or using bun:
 
 ```bash
-bun add appstoreconnect-api
+bun add @unfoldingcx/appstoreconnect-api
 ```
 
 ## 🔑 Setup
@@ -48,7 +48,7 @@ bun add appstoreconnect-api
 ## 🎯 Quick Start
 
 ```typescript
-import { submitToAppReview } from 'appstoreconnect-api'
+import { submitToAppReview } from '@unfoldingcx/appstoreconnect-api'
 
 // Submit your app for review
 await submitToAppReview({
@@ -162,7 +162,7 @@ console.log(formatBuildInfo(builds[0]))
 ### With Environment Variables
 
 ```typescript
-import { submitToAppReview } from 'appstoreconnect-api'
+import { submitToAppReview } from '@unfoldingcx/appstoreconnect-api'
 
 await submitToAppReview({
   issuerId: process.env.ASC_ISSUER_ID!,
@@ -182,7 +182,7 @@ await submitToAppReview({
 Find and submit the latest valid build automatically:
 
 ```typescript
-import { submitToAppReview, getBuilds } from 'appstoreconnect-api'
+import { submitToAppReview, getBuilds } from '@unfoldingcx/appstoreconnect-api'
 
 const jwtOptions = {
   issuerId: process.env.ASC_ISSUER_ID!,
@@ -238,7 +238,7 @@ jobs:
           node-version: '18'
       
       - name: Install dependencies
-        run: npm install appstoreconnect-api
+        run: npm install @unfoldingcx/appstoreconnect-api
       
       - name: Submit to App Review
         env:
@@ -249,7 +249,7 @@ jobs:
         run: |
           echo "$ASC_PRIVATE_KEY" > AuthKey.p8
           node -e "
-            const { submitToAppReview } = require('appstoreconnect-api');
+            const { submitToAppReview } = require('@unfoldingcx/appstoreconnect-api');
             submitToAppReview({
               issuerId: process.env.ASC_ISSUER_ID,
               keyId: process.env.ASC_KEY_ID,
@@ -267,7 +267,7 @@ jobs:
 ### Error Handling
 
 ```typescript
-import { submitToAppReview } from 'appstoreconnect-api'
+import { submitToAppReview } from '@unfoldingcx/appstoreconnect-api'
 
 try {
   await submitToAppReview({

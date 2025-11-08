@@ -2,7 +2,7 @@
  * Basic Usage Example
  * 
  * This example shows how to submit an app to Apple App Review
- * using the appstoreconnect-api library.
+ * using the @unfoldingcx/appstoreconnect-api library.
  */
 
 import { submitToAppReview } from '../src/index'
