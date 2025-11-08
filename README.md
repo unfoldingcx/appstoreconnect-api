@@ -3,7 +3,7 @@
 <div align="center">
   <p>
     <strong>ASCA - Automated Review Submission</strong><br/>
-    <sub><a href="https://www.unfolding.cx/">広げる THE FUTURE</a></sub>
+    <sub><a href="https://www.unfolding.cx/" target="_blank">広げる THE FUTURE</a></sub>
   </p>
 </div>
 
