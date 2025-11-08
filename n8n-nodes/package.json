@@ -1,6 +1,6 @@
 {
   "name": "@unfoldingcx/n8n-nodes-appstoreconnect",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "n8n node for App Store Connect automation - submit builds, manage versions, and generate AI-powered release notes",
   "keywords": [
     "n8n",
