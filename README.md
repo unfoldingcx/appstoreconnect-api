@@ -9,6 +9,7 @@ A powerful, production-ready TypeScript library for automating Apple App Store C
 ## ✨ Features
 
 - ⚡ **The Ultimate One-Liner** - `asca submit --build-id latest --version "1.0.0" --ai-release-notes` - That's it! Auto-finds build, generates notes, submits to review
+- 🎬 **GitHub Action** - Use as a custom action in your CI/CD workflows with `uses: unfoldingcx/appstoreconnect-api@v1`
 - 🎯 **Complete Automation** - Handles the entire review submission workflow from version creation to final submission
 - 🤖 **AI-Powered Release Notes** - Generate localized release notes from git commits using OpenAI (supports 25+ languages)
 - 🔍 **Smart Build Discovery** - Use `--build-id latest` to automatically use the newest VALID build (no IDs to remember!)
@@ -16,7 +17,7 @@ A powerful, production-ready TypeScript library for automating Apple App Store C
 - 🔄 **Conflict Resolution** - Automatically cancels pending submissions when needed and retries
 - 📊 **Build Management** - Query and list available builds with detailed status information
 - 🌍 **Multi-Locale Support** - Works with any locale configured in your App Store Connect account
-- 🖥️ **CLI & API** - Use as a library in your code or as a command-line tool
+- 🖥️ **CLI & Library** - Use as a library in your code, as a command-line tool, or as a GitHub Action
 - 🛡️ **Type Safe** - Written in TypeScript with full type definitions
 - 📝 **Detailed Logging** - Step-by-step progress tracking with emoji indicators
 - 🚨 **Clear Error Messages** - Human-readable error messages with context and suggestions
@@ -46,6 +47,25 @@ Then use the `asca` command:
 ```bash
 asca --help
 ```
+
+### GitHub Action
+
+Use in your GitHub workflows for CI/CD automation:
+
+```yaml
+- uses: unfoldingcx/appstoreconnect-api@v1
+  with:
+    issuer-id: ${{ secrets.ASC_ISSUER_ID }}
+    key-id: ${{ secrets.ASC_KEY_ID }}
+    private-key: ${{ secrets.ASC_PRIVATE_KEY }}
+    app-id: ${{ secrets.APP_ID }}
+    build-id: 'latest'
+    version: '1.0.0'
+    ai-release-notes: true
+    openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+```
+
+[📚 Full GitHub Action Documentation →](GITHUB_ACTION.md)
 
 ## 🖥️ CLI Usage
 

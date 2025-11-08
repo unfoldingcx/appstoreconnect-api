@@ -1,0 +1,139 @@
+name: 'App Store Connect Publish'
+description: 'Automatically publish your iOS/macOS/tvOS app to Apple App Store with optional AI-powered release notes'
+author: 'JOAO PEDRO BARBOSA VIANA <pitter@unfolding.cx>'
+branding:
+  icon: 'upload-cloud'
+  color: 'blue'
+
+inputs:
+  # Required inputs
+  issuer-id:
+    description: 'App Store Connect Issuer ID'
+    required: true
+  key-id:
+    description: 'App Store Connect Key ID'
+    required: true
+  private-key:
+    description: 'Content of your .p8 private key file'
+    required: true
+  app-id:
+    description: 'Your app ID from App Store Connect'
+    required: true
+  build-id:
+    description: 'Build UUID from TestFlight, or "latest" to auto-select newest VALID build'
+    required: true
+  version:
+    description: 'Version string (e.g., 1.0.0)'
+    required: true
+  
+  # Optional inputs
+  platform:
+    description: 'Platform: IOS, MACOS, or TVOS'
+    required: false
+    default: 'IOS'
+  locale:
+    description: 'Locale for release notes (e.g., en-US, pt-BR)'
+    required: false
+    default: 'en-US'
+  release-notes:
+    description: "Release notes text (What's New). Leave empty to use ai-release-notes or default message."
+    required: false
+    default: ''
+  
+  # AI Release Notes inputs
+  ai-release-notes:
+    description: 'Auto-generate release notes with AI (true/false)'
+    required: false
+    default: 'false'
+  openai-api-key:
+    description: 'OpenAI API key (required if ai-release-notes is true)'
+    required: false
+    default: ''
+  openai-org-id:
+    description: 'OpenAI Organization ID (optional)'
+    required: false
+    default: ''
+  since-days:
+    description: 'For AI: Generate notes from commits in last N days (optional)'
+    required: false
+    default: ''
+
+outputs:
+  build-id:
+    description: 'The build ID that was submitted (useful when using "latest")'
+    value: ${{ steps.submit.outputs.build-id }}
+  release-notes:
+    description: 'The release notes that were used (useful when using AI generation)'
+    value: ${{ steps.submit.outputs.release-notes }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+    
+    - name: Install App Store Connect API
+      shell: bash
+      run: npm install -g @unfoldingcx/appstoreconnect-api
+    
+    - name: Create private key file
+      shell: bash
+      run: |
+        mkdir -p ${{ runner.temp }}/asca-keys
+        echo "${{ inputs.private-key }}" > ${{ runner.temp }}/asca-keys/AuthKey.p8
+        chmod 600 ${{ runner.temp }}/asca-keys/AuthKey.p8
+    
+    - name: Submit to App Review
+      id: submit
+      shell: bash
+      env:
+        ASC_ISSUER_ID: ${{ inputs.issuer-id }}
+        ASC_KEY_ID: ${{ inputs.key-id }}
+        ASC_KEY_PATH: ${{ runner.temp }}/asca-keys/AuthKey.p8
+        APP_ID: ${{ inputs.app-id }}
+        BUILD_ID: ${{ inputs.build-id }}
+        VERSION: ${{ inputs.version }}
+        PLATFORM: ${{ inputs.platform }}
+        LOCALE: ${{ inputs.locale }}
+        RELEASE_NOTES: ${{ inputs.release-notes }}
+        AI_RELEASE_NOTES: ${{ inputs.ai-release-notes }}
+        OPENAI_API_KEY: ${{ inputs.openai-api-key }}
+        OPENAI_ORG_ID: ${{ inputs.openai-org-id }}
+        SINCE_DAYS: ${{ inputs.since-days }}
+      run: |
+        # Build the command
+        CMD="asca submit --build-id \"$BUILD_ID\" --version \"$VERSION\" --platform \"$PLATFORM\" --locale \"$LOCALE\""
+        
+        # Add AI release notes flag if enabled
+        if [ "$AI_RELEASE_NOTES" = "true" ]; then
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "❌ Error: openai-api-key is required when ai-release-notes is true"
+            exit 1
+          fi
+          CMD="$CMD --ai-release-notes"
+          
+          if [ -n "$SINCE_DAYS" ]; then
+            CMD="$CMD --since-days $SINCE_DAYS"
+          fi
+        elif [ -n "$RELEASE_NOTES" ]; then
+          # Use provided release notes
+          CMD="$CMD --release-notes \"$RELEASE_NOTES\""
+        fi
+        
+        # Execute the command
+        echo "Executing: $CMD"
+        eval $CMD
+        
+        # Capture outputs (these would need to be extracted from the CLI output in a real implementation)
+        echo "build-id=$BUILD_ID" >> $GITHUB_OUTPUT
+        echo "release-notes=$RELEASE_NOTES" >> $GITHUB_OUTPUT
+    
+    - name: Clean up private key
+      if: always()
+      shell: bash
+      run: |
+        rm -f ${{ runner.temp }}/asca-keys/AuthKey.p8
+        rmdir ${{ runner.temp }}/asca-keys 2>/dev/null || true
+

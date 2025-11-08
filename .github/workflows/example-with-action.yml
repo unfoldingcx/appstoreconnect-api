@@ -1,0 +1,58 @@
+# Example: Using the Custom GitHub Action
+#
+# This shows how to use the unfoldingcx/appstoreconnect-api action
+# in your own repository's workflows.
+
+name: Publish to App Store (Using Action)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version string (e.g., 1.0.0)"
+        required: true
+        type: string
+      use_ai_notes:
+        description: "Generate release notes with AI"
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  submit:
+    name: Publish to App Store
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full git history for AI release notes
+
+      # Use the custom action
+      - name: Publish to App Store
+        uses: unfoldingcx/appstoreconnect-api@v1
+        with:
+          # Required credentials (from GitHub Secrets)
+          issuer-id: ${{ secrets.ASC_ISSUER_ID }}
+          key-id: ${{ secrets.ASC_KEY_ID }}
+          private-key: ${{ secrets.ASC_PRIVATE_KEY }}
+          app-id: ${{ secrets.APP_ID }}
+
+          # Build and version
+          build-id: "latest" # Auto-select latest VALID build
+          version: ${{ github.event.inputs.version }}
+
+          # Platform and locale
+          platform: "IOS"
+          locale: "pt-BR"
+
+          # AI-powered release notes
+          ai-release-notes: ${{ github.event.inputs.use_ai_notes }}
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Success message
+        if: success()
+        run: |
+          echo "🎉 Successfully sent to Apple review!"
+          echo "Version: ${{ github.event.inputs.version }}"

@@ -29,7 +29,9 @@
     "release-notes",
     "changelog",
     "git",
-    "cli"
+    "cli",
+    "github-action",
+    "github-actions"
   ],
   "author": "JOAO PEDRO BARBOSA VIANA <pitter@unfolding.cx>",
   "license": "MIT",

@@ -39,6 +39,14 @@ Added AI-powered release notes generation with OpenAI integration!
   - `asca submit --build-id latest --version "1.0.0" --ai-release-notes`
   - No need to remember or look up build IDs!
 
+- **🎬 GitHub Action**
+  - Published as a custom GitHub Action for CI/CD workflows
+  - Use with `uses: unfoldingcx/appstoreconnect-api@v1`
+  - Supports all CLI features (latest build, AI notes, manual notes)
+  - Composite action using Node.js
+  - Automatic credential cleanup for security
+  - Full documentation in `GITHUB_ACTION.md`
+
 - **⚙️ Enhanced Config Command**
   - Added OpenAI API Key configuration
   - Added OpenAI Org ID configuration (optional)
@@ -48,8 +56,10 @@ Added AI-powered release notes generation with OpenAI integration!
 ### 📚 Documentation
 
 - New `AI_RELEASE_NOTES.md` - Comprehensive guide for AI features
+- New `GITHUB_ACTION.md` - Complete GitHub Action usage guide
 - Added `examples/ai-release-notes-example.ts` - 5 complete examples
-- Updated README with AI release notes documentation
+- Added `.github/workflows/example-with-action.yml` - GitHub Action example
+- Updated README with AI release notes and GitHub Action documentation
 - Added release-notes command to help text
 - Enhanced CLI help with OpenAI environment variables
 
