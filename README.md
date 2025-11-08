@@ -19,12 +19,12 @@
 
 ## ✨ Features
 
-- ⚡ **The Ultimate One-Liner** - `asca submit --build-id latest --version "1.0.0" --ai-release-notes` - That's it! Auto-finds build, generates notes, submits to review
-- 🎬 **GitHub Action** - Use as a custom action in your CI/CD workflows with `uses: unfoldingcx/appstoreconnect-api@v1`
-- 🎯 **Complete Automation** - Handles the entire review submission workflow from version creation to final submission
-- 🤖 **AI-Powered Release Notes** - Generate localized release notes from git commits using OpenAI (supports 25+ languages)
-- 🔍 **Smart Build Discovery** - Use `--build-id latest` to automatically use the newest VALID build (no IDs to remember!)
-- 🧠 **Intelligent Error Recovery** - Automatically handles conflicts, retries failed operations, and provides actionable feedback
+- ⚡ **The Ultimate One-Liner** - `asca submit --build-id latest --version "1.0.0" --ai-release-notes` - That's it!
+- 🎬 **GitHub Action** - Use as a custom action in your CI/CD workflows
+- 🎯 **Complete Automation** - Does review submission workflow from version creation to final submission
+- 🤖 **AI-Powered Release Notes** - Generate release notes from Git commits using OpenAI (25+ languages)
+- 🔍 **Smart Build Discovery** - Use `--build-id latest` to automatically use the newest VALID build
+- 🧠 **Intelligent Error Recovery** - Automatically handles conflicts and provides actionable feedback
 - 🔄 **Conflict Resolution** - Automatically cancels pending submissions when needed and retries
 - 📊 **Build Management** - Query and list available builds with detailed status information
 - 🌍 **Multi-Locale Support** - Works with any locale configured in your App Store Connect account
