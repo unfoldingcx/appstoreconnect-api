@@ -239,29 +239,43 @@ export class AppStoreConnect implements INodeType {
   }
 
   async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    console.log('[ASCA] ========================================')
+    console.log('[ASCA] Main Node Execute Method Called')
+    console.log('[ASCA] ========================================')
+    
     const items = this.getInputData()
     const returnData: INodeExecutionData[] = []
     const length = items.length
     let responseData
+    
+    console.log('[ASCA] Processing', length, 'item(s)')
 
     for (let i = 0; i < length; i++) {
       try {
         const operation = this.getNodeParameter('operation', i) as string
+        console.log('[ASCA] Item', i, '- Selected operation:', operation)
 
         if (operation === 'submit') {
+          console.log('[ASCA] Routing to: Submit Operation')
           responseData = await executeSubmitOperation.call(this, i)
         } else if (operation === 'getBuilds') {
+          console.log('[ASCA] Routing to: Get Builds Operation')
           responseData = await executeGetBuildsOperation.call(this, i)
         } else if (operation === 'cancel') {
+          console.log('[ASCA] Routing to: Cancel Operation')
           responseData = await executeCancelOperation.call(this, i)
         } else if (operation === 'generateReleaseNotes') {
+          console.log('[ASCA] Routing to: Generate Release Notes Operation')
           responseData = await executeGenerateReleaseNotesOperation.call(this, i)
         } else {
+          console.error('[ASCA] Unknown operation:', operation)
           throw new NodeOperationError(this.getNode(), `The operation "${operation}" is not known!`)
         }
 
+        console.log('[ASCA] Operation completed successfully')
         returnData.push(...responseData)
       } catch (error) {
+        console.error('[ASCA] Error in main execute:', error)
         if (this.continueOnFail()) {
           returnData.push({
             json: {
@@ -274,6 +288,7 @@ export class AppStoreConnect implements INodeType {
       }
     }
 
+    console.log('[ASCA] Returning', returnData.length, 'result(s)')
     return [returnData]
   }
 }
