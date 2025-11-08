@@ -1,0 +1,36 @@
+# Source files (only include compiled dist/)
+src/
+*.ts
+!*.d.ts
+
+# Development files
+.cursor/
+.vscode/
+node_modules/
+keys/
+*.log
+
+# Config files
+tsconfig.json
+.prettierrc
+.eslintrc*
+eslint.config.mjs
+bun.lock
+
+# Documentation (keep README.md and LICENSE)
+CLAUDE.md
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# Testing
+*.test.ts
+*.spec.ts
+__tests__/
+coverage/
+
+# Build artifacts
+*.tsbuildinfo
+

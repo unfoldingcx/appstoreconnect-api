@@ -1,0 +1,127 @@
+# Example GitHub Actions Workflow for App Store Submission
+# 
+# Copy this file to .github/workflows/submit-to-app-review.yml and customize it for your needs.
+# 
+# Required GitHub Secrets:
+# - ASC_ISSUER_ID: Your App Store Connect Issuer ID
+# - ASC_KEY_ID: Your App Store Connect Key ID  
+# - ASC_PRIVATE_KEY: Content of your .p8 private key file
+# - APP_ID: Your app's unique identifier
+
+name: Submit to App Store Review
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_id:
+        description: 'Build ID from TestFlight (UUID)'
+        required: true
+        type: string
+      version:
+        description: 'Version string (e.g., 1.0.0)'
+        required: true
+        type: string
+      release_notes:
+        description: 'Release notes (What\'s New)'
+        required: false
+        default: 'Bug fixes and performance improvements.'
+        type: string
+      locale:
+        description: 'Locale (e.g., en-US, pt-BR)'
+        required: false
+        default: 'en-US'
+        type: string
+      platform:
+        description: 'Platform'
+        required: false
+        default: 'IOS'
+        type: choice
+        options:
+          - IOS
+          - MACOS
+          - TVOS
+
+jobs:
+  submit:
+    name: Submit to App Review
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install appstoreconnect-api
+
+      - name: Create private key file
+        env:
+          ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+        run: |
+          mkdir -p keys
+          echo "$ASC_PRIVATE_KEY" > keys/AuthKey.p8
+          chmod 600 keys/AuthKey.p8
+
+      - name: Submit to App Review
+        env:
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          APP_ID: ${{ secrets.APP_ID }}
+          BUILD_ID: ${{ github.event.inputs.build_id }}
+          VERSION: ${{ github.event.inputs.version }}
+          RELEASE_NOTES: ${{ github.event.inputs.release_notes }}
+          LOCALE: ${{ github.event.inputs.locale }}
+          PLATFORM: ${{ github.event.inputs.platform }}
+        run: |
+          node -e "
+            const { submitToAppReview } = require('appstoreconnect-api');
+            
+            submitToAppReview({
+              issuerId: process.env.ASC_ISSUER_ID,
+              keyId: process.env.ASC_KEY_ID,
+              privateKeyPath: './keys/AuthKey.p8',
+              appId: process.env.APP_ID,
+              buildId: process.env.BUILD_ID,
+              versionString: process.env.VERSION,
+              platform: process.env.PLATFORM,
+              releaseNotes: process.env.RELEASE_NOTES,
+              locale: process.env.LOCALE
+            })
+            .then(() => {
+              console.log('✅ Successfully submitted to App Review!');
+              process.exit(0);
+            })
+            .catch((error) => {
+              console.error('❌ Submission failed:', error.message);
+              process.exit(1);
+            });
+          "
+
+      - name: Clean up private key
+        if: always()
+        run: |
+          rm -f keys/AuthKey.p8
+
+      - name: Post success comment
+        if: success()
+        run: |
+          echo "🎉 Successfully submitted version ${{ github.event.inputs.version }} to App Review!"
+          echo "Build ID: ${{ github.event.inputs.build_id }}"
+          echo "Platform: ${{ github.event.inputs.platform }}"
+          echo "Locale: ${{ github.event.inputs.locale }}"
+
+      - name: Post failure comment  
+        if: failure()
+        run: |
+          echo "❌ Submission failed. Please check the logs above for details."
+          echo "Common issues:"
+          echo "  - Invalid build ID"
+          echo "  - Build not in VALID state"
+          echo "  - Invalid locale"
+          echo "  - Incorrect credentials"
+

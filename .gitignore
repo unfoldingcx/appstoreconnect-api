@@ -1,6 +1,9 @@
 # dependencies (bun install)
 node_modules
 
+# Any .p8 file
+keys/*.p8
+
 # output
 out
 dist
