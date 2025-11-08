@@ -1,5 +1,5 @@
 {
-  "name": "n8n-nodes-appstoreconnect",
+  "name": "@unfoldingcx/n8n-nodes-appstoreconnect",
   "version": "1.0.0",
   "description": "n8n node for App Store Connect automation - submit builds, manage versions, and generate AI-powered release notes",
   "keywords": [
@@ -13,6 +13,7 @@
   ],
   "author": "JOAO PEDRO BARBOSA VIANA <pitter@unfolding.cx>",
   "license": "MIT",
+  "private": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/unfoldingcx/appstoreconnect-api.git",
