@@ -124,7 +124,7 @@ ${chalk.yellow.bold('SUBMIT COMMAND:')}
     ${chalk.cyan('--key-id')} ${chalk.gray('<id>')}            Your Key ID ${chalk.dim('(or env: ASC_KEY_ID)')}
     ${chalk.cyan('--key-path')} ${chalk.gray('<path>')}        Path to .p8 file ${chalk.dim('(or env: ASC_KEY_PATH)')}
     ${chalk.cyan('--app-id')} ${chalk.gray('<id>')}            Your App ID ${chalk.dim('(or env: APP_ID)')}
-    ${chalk.cyan('--build-id')} ${chalk.gray('<id>')}          Build UUID ${chalk.dim('(or env: BUILD_ID)')}
+    ${chalk.cyan('--build-id')} ${chalk.gray('<id|latest>')}   Build UUID or ${chalk.green('"latest"')} ${chalk.dim('(or env: BUILD_ID)')}
     ${chalk.cyan('--version')} ${chalk.gray('<version>')}      Version string ${chalk.dim('(e.g., 1.0.0)')}
     ${chalk.cyan('--platform')} ${chalk.gray('<platform>')}    Platform: IOS, MACOS, or TVOS ${chalk.dim('(default: IOS)')}
     ${chalk.cyan('--release-notes')} ${chalk.gray('<notes>')}  Release notes text ${chalk.dim('(or use --ai-release-notes)')}
@@ -236,6 +236,9 @@ ${chalk.yellow.bold('EXAMPLES:')}
   ${chalk.gray('# Submit with AI-generated release notes')}
   ${chalk.white('asca submit')} ${chalk.cyan('--build-id')} ${chalk.green('"abc"')} ${chalk.cyan('--version')} ${chalk.green('"1.0.0"')} ${chalk.cyan('--ai-release-notes')}
   ${chalk.white('asca submit')} ${chalk.cyan('--build-id')} ${chalk.green('"xyz"')} ${chalk.cyan('--version')} ${chalk.green('"2.0.0"')} ${chalk.cyan('--ai-release-notes')} ${chalk.cyan('--since-days')} ${chalk.green('14')}
+
+  ${chalk.gray('# Submit with latest VALID build + AI notes')}
+  ${chalk.white('asca submit')} ${chalk.cyan('--build-id')} ${chalk.green('latest')} ${chalk.cyan('--version')} ${chalk.green('"1.0.0"')} ${chalk.cyan('--ai-release-notes')}
 
 ${chalk.yellow.bold('DOCUMENTATION:')}
   ${chalk.blue.underline('https://github.com/unfoldingcx/appstoreconnect-api')}
@@ -360,13 +363,61 @@ async function handleSubmit(args: CLIArgs) {
   const keyId = getEnvValue(args.keyId, 'ASC_KEY_ID', 'keyId')
   const privateKeyPath = getEnvValue(args.privateKeyPath, 'ASC_KEY_PATH', 'privateKeyPath')
   const appId = getEnvValue(args.appId, 'APP_ID', 'appId')
-  const buildId = getEnvValue(args.buildId, 'BUILD_ID')
+  let buildId = getEnvValue(args.buildId, 'BUILD_ID')
   const versionString = getEnvValue(args.versionString, 'VERSION_STRING')
   const config = loadConfig()
   const platform = (args.platform || process.env.PLATFORM || config.platform || 'IOS') as 'IOS' | 'MACOS' | 'TVOS'
   const locale = args.locale || process.env.LOCALE || config.locale || 'en-US'
   
   let releaseNotes = args.releaseNotes || process.env.RELEASE_NOTES
+  
+  // Handle "latest" build ID
+  if (buildId?.toLowerCase() === 'latest') {
+    if (!appId || !issuerId || !keyId || !privateKeyPath) {
+      console.error(chalk.red.bold('❌ App Store Connect credentials required to fetch latest build\n'))
+      process.exit(1)
+    }
+    
+    console.log(chalk.blue('🔍 Fetching latest VALID build...\n'))
+    
+    try {
+      const builds = await getBuilds(
+        appId!,
+        {
+          issuerId: issuerId!,
+          keyId: keyId!,
+          privateKeyPath: privateKeyPath!
+        },
+        10
+      )
+      
+      const latestValidBuild = builds.find(b => b.attributes.processingState === 'VALID')
+      
+      if (!latestValidBuild) {
+        console.error(chalk.red.bold('❌ No VALID builds found\n'))
+        console.error(chalk.yellow('Available builds:'))
+        if (builds.length > 0) {
+          builds.forEach(build => {
+            const statusColor = build.attributes.processingState === 'VALID' ? chalk.green : 
+                               build.attributes.processingState === 'PROCESSING' ? chalk.yellow : chalk.red
+            console.error(`  • ${build.attributes.version} - ${statusColor(build.attributes.processingState)}`)
+          })
+        } else {
+          console.error(chalk.gray('  No builds found for this app'))
+        }
+        console.error(chalk.yellow('\n💡 Upload a build to TestFlight and wait for processing to complete\n'))
+        process.exit(1)
+      }
+      
+      buildId = latestValidBuild.id
+      console.log(chalk.green(`✅ Using latest VALID build: ${chalk.cyan(latestValidBuild.attributes.version)}`))
+      console.log(chalk.gray(`   Build ID: ${buildId}`))
+      console.log(chalk.gray(`   Uploaded: ${new Date(latestValidBuild.attributes.uploadedDate).toLocaleString()}\n`))
+    } catch (error: any) {
+      console.error(chalk.red.bold('❌ Failed to fetch latest build:'), chalk.red(error.message), '\n')
+      process.exit(1)
+    }
+  }
   
   // Check if we should generate AI release notes
   if (args.aiReleaseNotes) {

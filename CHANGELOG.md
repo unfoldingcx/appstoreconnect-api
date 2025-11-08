@@ -35,6 +35,9 @@ Added AI-powered release notes generation with OpenAI integration!
   - Generates notes, shows preview, then submits automatically
   - Supports `--since-days` to customize date range
   - Works with all existing submit command options
+  - **Magic keyword `latest`** - Use `--build-id latest` to auto-select newest VALID build
+  - `asca submit --build-id latest --version "1.0.0" --ai-release-notes`
+  - No need to remember or look up build IDs!
 
 - **⚙️ Enhanced Config Command**
   - Added OpenAI API Key configuration

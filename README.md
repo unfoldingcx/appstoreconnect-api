@@ -8,8 +8,10 @@ A powerful, production-ready TypeScript library for automating Apple App Store C
 
 ## ✨ Features
 
+- ⚡ **The Ultimate One-Liner** - `asca submit --build-id latest --version "1.0.0" --ai-release-notes` - That's it! Auto-finds build, generates notes, submits to review
 - 🎯 **Complete Automation** - Handles the entire review submission workflow from version creation to final submission
 - 🤖 **AI-Powered Release Notes** - Generate localized release notes from git commits using OpenAI (supports 25+ languages)
+- 🔍 **Smart Build Discovery** - Use `--build-id latest` to automatically use the newest VALID build (no IDs to remember!)
 - 🧠 **Intelligent Error Recovery** - Automatically handles conflicts, retries failed operations, and provides actionable feedback
 - 🔄 **Conflict Resolution** - Automatically cancels pending submissions when needed and retries
 - 📊 **Build Management** - Query and list available builds with detailed status information
@@ -91,6 +93,38 @@ The `--ai-release-notes` flag will:
 3. Generate localized release notes with OpenAI
 4. Display preview
 5. Submit to App Review with generated notes
+
+**Use "latest" to auto-select the newest build:** ✨
+
+```bash
+# Don't remember the build ID? Use "latest"!
+asca submit \
+  --build-id latest \
+  --version "1.0.0" \
+  --ai-release-notes
+
+# This will:
+# 1. Fetch your latest VALID build from TestFlight
+# 2. Generate AI release notes
+# 3. Submit automatically
+```
+
+The `latest` keyword automatically finds and uses your most recent VALID build, so you don't need to look up build IDs!
+
+### ⚡ The Ultimate One-Liner
+
+After running `asca config` once, you can submit to App Review with a single command:
+
+```bash
+asca submit --build-id latest --version "1.0.0" --ai-release-notes
+```
+
+This **one command** will:
+1. ✨ Auto-find your latest VALID build
+2. 🤖 Generate release notes from git commits with AI
+3. 🚀 Submit to App Review
+
+**From git commits to App Review in ~30 seconds with ZERO manual work!**
 
 ### Using Environment Variables
 
