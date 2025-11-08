@@ -218,9 +218,9 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for deta
 
 ## Support
 
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/unfoldingx/appstoreconnect-api/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/unfoldingx/appstoreconnect-api/discussions)
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/unfoldingcx/appstoreconnect-api/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/unfoldingcx/appstoreconnect-api/discussions)
 - 📧 **Email**: pitter@unfolding.cx
 
-[1.0.0]: https://github.com/unfoldingx/appstoreconnect-api/releases/tag/v1.0.0
+[1.0.0]: https://github.com/unfoldingcx/appstoreconnect-api/releases/tag/v1.0.0
 

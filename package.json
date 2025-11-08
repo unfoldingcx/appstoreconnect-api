@@ -37,12 +37,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/unfoldingx/appstoreconnect-api.git"
+    "url": "https://github.com/unfoldingcx/appstoreconnect-api.git"
   },
   "bugs": {
-    "url": "https://github.com/unfoldingx/appstoreconnect-api/issues"
+    "url": "https://github.com/unfoldingcx/appstoreconnect-api/issues"
   },
-  "homepage": "https://github.com/unfoldingx/appstoreconnect-api#readme",
+  "homepage": "https://github.com/unfoldingcx/appstoreconnect-api#readme",
   "files": [
     "dist",
     "README.md",
