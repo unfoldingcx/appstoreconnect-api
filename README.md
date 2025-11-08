@@ -21,6 +21,7 @@
 
 - ⚡ **One shot** - `asca submit --build-id latest --version "1.0.0" --ai-release-notes` - That's it!
 - 🎬 **GitHub Action** - Use as a custom action in your CI/CD workflows
+- 🔵 **n8n Node** - Use as a community node in n8n workflows
 - 🎯 **Complete Automation** - Does review submission workflow from version creation to final submission
 - 🤖 **AI-Powered Release Notes** - Generate release notes from Git commits using OpenAI (25+ languages)
 - 🔍 **Smart Build Discovery** - Use `--build-id latest` to automatically use the newest VALID build
@@ -77,6 +78,23 @@ Use in your GitHub workflows for CI/CD automation:
 ```
 
 [📚 Full GitHub Action Documentation →](GITHUB_ACTION.md)
+
+### n8n Community Node
+
+Use the App Store Connect node in your n8n workflows:
+
+```bash
+# Install in n8n via: Settings → Community Nodes → n8n-nodes-appstoreconnect
+# Or manually: npm install n8n-nodes-appstoreconnect
+```
+
+Available operations:
+- Submit to Review
+- Get Builds
+- Cancel Pending Submissions
+- Generate AI Release Notes (CLI required for now)
+
+[📚 Full n8n Node Documentation →](n8n-nodes/README.md)
 
 ## 🖥️ CLI Usage
 

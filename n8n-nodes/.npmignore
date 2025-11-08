@@ -1,0 +1,12 @@
+src/
+.gitignore
+.eslintrc
+tsconfig.json
+node_modules/
+*.test.ts
+.DS_Store
+.env
+.env.local
+coverage/
+dist/**/*.map
+

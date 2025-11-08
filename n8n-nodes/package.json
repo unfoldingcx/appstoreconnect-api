@@ -1,0 +1,51 @@
+{
+  "name": "n8n-nodes-appstoreconnect",
+  "version": "1.0.0",
+  "description": "n8n node for App Store Connect automation - submit builds, manage versions, and generate AI-powered release notes",
+  "keywords": [
+    "n8n",
+    "n8n-community-node-package",
+    "app-store-connect",
+    "ios",
+    "automation",
+    "release-notes",
+    "ai"
+  ],
+  "author": "JOAO PEDRO BARBOSA VIANA <pitter@unfolding.cx>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unfoldingcx/appstoreconnect-api.git",
+    "directory": "n8n-nodes"
+  },
+  "n8n": {
+    "nodes": [
+      "dist/nodes/AppStoreConnect/AppStoreConnect.node.js"
+    ],
+    "credentials": [
+      "dist/credentials/AppStoreConnectApi.credentials.js"
+    ]
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && cp src/nodes/AppStoreConnect/appStoreConnect.svg dist/nodes/AppStoreConnect/",
+    "dev": "tsc --watch",
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@unfoldingcx/appstoreconnect-api": "^1.2.0"
+  },
+  "peerDependencies": {
+    "n8n-core": "^1.0.0",
+    "n8n-workflow": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "n8n-core": "^1.0.0",
+    "n8n-workflow": "^1.0.0",
+    "typescript": "^5.0.0"
+  }
+}
+
