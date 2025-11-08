@@ -1,4 +1,10 @@
-# 🚀 App Store Connect API - Automated Review Submission
+<h1 align="center"><img src="https://www.unfolding.cx/images/branding/main-rounded.png" width="200" height="200"></h1>
+
+<div align="center">
+  <p>
+    <strong>ASCA - Automated Review Submission</strong>
+  </p>
+</div>
 
 [![npm version](https://img.shields.io/npm/v/@unfoldingcx/appstoreconnect-api.svg)](https://www.npmjs.com/package/appstoreconnect-api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
