@@ -19,7 +19,7 @@
 
 ## ✨ Features
 
-- ⚡ **The Ultimate One-Liner** - `asca submit --build-id latest --version "1.0.0" --ai-release-notes` - That's it!
+- ⚡ **Ultimate One-Liner** - `asca submit --build-id latest --version "1.0.0" --ai-release-notes` - That's it!
 - 🎬 **GitHub Action** - Use as a custom action in your CI/CD workflows
 - 🎯 **Complete Automation** - Does review submission workflow from version creation to final submission
 - 🤖 **AI-Powered Release Notes** - Generate release notes from Git commits using OpenAI (25+ languages)
