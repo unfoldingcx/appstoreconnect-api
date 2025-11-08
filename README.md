@@ -81,7 +81,7 @@ Use in your GitHub workflows for CI/CD automation:
 
 ### n8n Community Node
 
-Use the App Store Connect node in your n8n workflows:
+Use the App Store Connect node in your N8N workflows:
 
 ```bash
 # Install in n8n via: Settings → Community Nodes → n8n-nodes-appstoreconnect
