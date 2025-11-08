@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-11-08
+
+### 🎉 CLI Release
+
+Added a powerful command-line interface for the package!
+
+### ✨ New Features
+
+- **CLI Tool** - New `asca` command-line interface
+  - `asca submit` - Submit apps to review from the terminal
+  - `asca builds` - List available builds
+  - `asca cancel` - Cancel pending submissions
+  - `asca help` - Show help and usage information
+- **Global Installation** - Install globally with `npm install -g @unfoldingcx/appstoreconnect-api`
+- **Environment Variable Support** - Use env vars for credentials in CLI
+- **Multiple Aliases** - Use either `asca` or `appstoreconnect-api` command
+- **Beautiful CLI Output** - Formatted help text with clear examples
+
+### 📚 Documentation
+
+- Added comprehensive CLI usage documentation to README
+- Added `examples/cli-usage.sh` with practical CLI examples
+- Updated all examples to use scoped package name `@unfoldingcx/appstoreconnect-api`
+
+### 🔧 Technical
+
+- Added `bin` field to package.json for CLI executable
+- Created `src/cli.ts` with full command parsing
+- CLI uses the same robust error handling as the API
+
+---
+
 ## [1.0.0] - 2025-11-08
 
 ### 🎉 Initial Release

@@ -7,6 +7,10 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "private": false,
+  "bin": {
+    "asca": "./dist/cli.js",
+    "appstoreconnect-api": "./dist/cli.js"
+  },
   "keywords": [
     "apple",
     "app-store",
@@ -37,11 +41,13 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && chmod +x dist/cli.js",
     "start": "node dist/index.js",
     "format": "prettier --write \"**/*.{ts,json,md}\"",
     "lint:fix": "prettier --write \"{src}/**/*.{ts}\" && eslint \"{src}/**/*.{ts}\" --fix --quiet",
     "dev": "bun run src/index.ts",
+    "cli": "bun run src/cli.ts",
+    "test:cli": "bun run build && npm link && asca --help",
     "prepublishOnly": "bun run build"
   },
   "devDependencies": {

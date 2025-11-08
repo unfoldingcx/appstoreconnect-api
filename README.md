@@ -13,6 +13,7 @@ A powerful, production-ready TypeScript library for automating Apple App Store C
 - 🔄 **Conflict Resolution** - Automatically cancels pending submissions when needed and retries
 - 📊 **Build Management** - Query and list available builds with detailed status information
 - 🌍 **Multi-Locale Support** - Works with any locale configured in your App Store Connect account
+- 🖥️ **CLI & API** - Use as a library in your code or as a command-line tool
 - 🛡️ **Type Safe** - Written in TypeScript with full type definitions
 - 📝 **Detailed Logging** - Step-by-step progress tracking with emoji indicators
 - 🚨 **Clear Error Messages** - Human-readable error messages with context and suggestions
@@ -27,6 +28,73 @@ Or using bun:
 
 ```bash
 bun add @unfoldingcx/appstoreconnect-api
+```
+
+### Global CLI Installation
+
+Install globally to use the CLI from anywhere:
+
+```bash
+npm install -g @unfoldingcx/appstoreconnect-api
+```
+
+Then use the `asca` command:
+
+```bash
+asca --help
+```
+
+## 🖥️ CLI Usage
+
+The package includes a powerful CLI for submitting apps directly from your terminal.
+
+### Submit to Review
+
+```bash
+asca submit \
+  --issuer-id "your-issuer-id" \
+  --key-id "your-key-id" \
+  --key-path "./keys/AuthKey.p8" \
+  --app-id "123456" \
+  --build-id "abc-def-123" \
+  --version "1.0.0" \
+  --platform "IOS" \
+  --release-notes "Bug fixes and improvements" \
+  --locale "en-US"
+```
+
+### Using Environment Variables
+
+Set credentials in environment variables for convenience:
+
+```bash
+export ASC_ISSUER_ID="your-issuer-id"
+export ASC_KEY_ID="your-key-id"
+export ASC_KEY_PATH="./keys/AuthKey.p8"
+export APP_ID="123456"
+
+# Now you can use shorter commands
+asca submit --build-id "abc" --version "1.0.0" --release-notes "Bug fixes"
+```
+
+### List Available Builds
+
+```bash
+asca builds --app-id "123456" --limit 10
+```
+
+### Cancel Pending Submissions
+
+```bash
+asca cancel --app-id "123456"
+```
+
+### Get Help
+
+```bash
+asca help
+asca submit --help
+asca builds --help
 ```
 
 ## 🔑 Setup
