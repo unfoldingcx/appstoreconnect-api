@@ -14,7 +14,7 @@
 
 </div>
 
-A powerful, production-ready TypeScript library for automating Apple App Store Connect submissions. Streamline your iOS, macOS, and tvOS app deployment workflow with intelligent error handling and automatic retry mechanisms.
+"ASCA" stands for "App Store Connect API" and it's a powerful, production-ready TypeScript library for automating Apple App Store Connect submissions. Streamline your iOS, macOS, and tvOS app deployment workflow with intelligent error handling and automatic retry mechanisms.
 
 ## ✨ Features
 
