@@ -13,29 +13,27 @@ export async function executeGetBuildsOperation(
 	this: IExecuteFunctions,
 	index: number,
 ): Promise<INodeExecutionData[]> {
-	console.log('[ASCA] ========================================')
-	console.log('[ASCA] EXECUTING: Get Builds Operation')
-	console.log('[ASCA] ========================================')
+	const logs: string[] = []
+	
+	logs.push('========================================')
+	logs.push('EXECUTING: Get Builds Operation')
+	logs.push('========================================')
 	
 	const credentials = await this.getCredentials('appStoreConnectApi')
 	const limit = this.getNodeParameter('limit', index, 10) as number
 	
-	console.log('[ASCA] Parameters:', { limit })
-	console.log('[ASCA] Credentials loaded:', {
-		issuerId: credentials.issuerId,
-		keyId: credentials.keyId,
-		appId: credentials.appId,
-		hasPrivateKey: !!(credentials.privateKey),
-	})
+	logs.push(`Parameters: limit=${limit}`)
+	logs.push(`Credentials loaded: issuerId=${credentials.issuerId}, keyId=${credentials.keyId}, appId=${credentials.appId}, hasPrivateKey=${!!(credentials.privateKey)}`)
 
 	// Write private key to temporary file
 	const tmpDir = os.tmpdir()
 	const keyPath = path.join(tmpDir, `asc-key-${Date.now()}.p8`)
-	console.log('[ASCA] Writing private key to:', keyPath)
+	logs.push(`Writing private key to: ${keyPath}`)
 	fs.writeFileSync(keyPath, credentials.privateKey as string)
 
 	try {
-		console.log('[ASCA] Calling getBuilds...')
+		logs.push('Calling getBuilds API...')
+		const startTime = Date.now()
 		const builds = await getBuilds(
 			credentials.appId as string,
 			{
@@ -45,8 +43,10 @@ export async function executeGetBuildsOperation(
 			},
 			limit
 		)
+		const duration = Date.now() - startTime
 		
-		console.log('[ASCA] API Response: Found', builds.length, 'builds')
+		logs.push(`API Response received in ${duration}ms: Found ${builds.length} builds`)
+		logs.push(`Returning ${Math.min(limit, builds.length)} builds`)
 
 		const response = [
 			{
@@ -61,19 +61,37 @@ export async function executeGetBuildsOperation(
 						uploadedDate: build.attributes.uploadedDate,
 						expirationDate: build.attributes.expirationDate,
 					})),
+					debug_logs: logs,
+					execution_time_ms: duration,
 				},
 			} as INodeExecutionData,
 		]
 		
-		console.log('[ASCA] Returning', response[0].json.buildsReturned, 'builds')
+		logs.push('Operation completed successfully')
 		return response
 	} catch (error) {
-		console.error('[ASCA] ERROR in GetBuilds operation:', error)
-		throw error
+		logs.push(`ERROR: ${error instanceof Error ? error.message : String(error)}`)
+		if (error instanceof Error && error.stack) {
+			logs.push(`Stack: ${error.stack}`)
+		}
+		
+		return [
+			{
+				json: {
+					success: false,
+					message: `Error: ${error instanceof Error ? error.message : String(error)}`,
+					totalBuilds: 0,
+					buildsReturned: 0,
+					builds: [],
+					debug_logs: logs,
+					error: error instanceof Error ? error.message : String(error),
+				},
+			} as INodeExecutionData,
+		]
 	} finally {
 		// Clean up temporary key file
 		if (fs.existsSync(keyPath)) {
-			console.log('[ASCA] Cleaning up temp file:', keyPath)
+			logs.push(`Cleaning up temp file: ${keyPath}`)
 			fs.unlinkSync(keyPath)
 		}
 	}
