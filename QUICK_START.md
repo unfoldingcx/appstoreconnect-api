@@ -179,8 +179,11 @@ export LOCALE="en-US"
 | Command | Description | Example |
 |---------|-------------|---------|
 | `asca submit` | Submit to review | `asca submit --build-id abc --version 1.0.0` |
+| `asca submit --ai-release-notes` | 🤖 Submit with AI notes | `asca submit --build-id abc --version 1.0.0 --ai-release-notes` |
 | `asca builds` | List builds | `asca builds --app-id 123 --limit 10` |
+| `asca release-notes` (or `rn`) | Preview AI notes | `asca rn --locale pt-BR` |
 | `asca cancel` | Cancel submissions | `asca cancel --app-id 123` |
+| `asca config` | Configure credentials | `asca config` |
 | `asca help` | Show help | `asca help` |
 | `asca version` | Show version | `asca version` |
 

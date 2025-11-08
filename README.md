@@ -9,6 +9,7 @@ A powerful, production-ready TypeScript library for automating Apple App Store C
 ## ✨ Features
 
 - 🎯 **Complete Automation** - Handles the entire review submission workflow from version creation to final submission
+- 🤖 **AI-Powered Release Notes** - Generate localized release notes from git commits using OpenAI (supports 25+ languages)
 - 🧠 **Intelligent Error Recovery** - Automatically handles conflicts, retries failed operations, and provides actionable feedback
 - 🔄 **Conflict Resolution** - Automatically cancels pending submissions when needed and retries
 - 📊 **Build Management** - Query and list available builds with detailed status information
@@ -50,6 +51,8 @@ The package includes a powerful CLI for submitting apps directly from your termi
 
 ### Submit to Review
 
+**With manual release notes:**
+
 ```bash
 asca submit \
   --issuer-id "your-issuer-id" \
@@ -63,6 +66,32 @@ asca submit \
   --locale "en-US"
 ```
 
+**With AI-generated release notes:** 🤖
+
+```bash
+# Auto-generate release notes from git commits and submit in one command!
+asca submit \
+  --build-id "abc-def-123" \
+  --version "1.0.0" \
+  --ai-release-notes \
+  --locale "pt-BR"
+
+# With custom date range (last 14 days)
+asca submit \
+  --build-id "abc-def-123" \
+  --version "1.0.0" \
+  --ai-release-notes \
+  --since-days 14 \
+  --locale "en-US"
+```
+
+The `--ai-release-notes` flag will:
+1. Fetch your last published App Store build
+2. Get commits since that build
+3. Generate localized release notes with OpenAI
+4. Display preview
+5. Submit to App Review with generated notes
+
 ### Using Environment Variables
 
 Set credentials in environment variables for convenience:
@@ -72,9 +101,13 @@ export ASC_ISSUER_ID="your-issuer-id"
 export ASC_KEY_ID="your-key-id"
 export ASC_KEY_PATH="./keys/AuthKey.p8"
 export APP_ID="123456"
+export OPENAI_API_KEY="sk-..."  # For AI release notes
 
 # Now you can use shorter commands
 asca submit --build-id "abc" --version "1.0.0" --release-notes "Bug fixes"
+
+# Or with AI-generated notes
+asca submit --build-id "abc" --version "1.0.0" --ai-release-notes
 ```
 
 ### List Available Builds
@@ -89,12 +122,44 @@ asca builds --app-id "123456" --limit 10
 asca cancel --app-id "123456"
 ```
 
+### Generate AI Release Notes (Preview)
+
+Automatically generate release notes from your git commits using AI:
+
+```bash
+# Generate notes from commits since last published build
+asca release-notes --locale "en-US"
+
+# Short alias
+asca rn --locale "pt-BR"
+
+# Generate from last 7 days
+asca rn --since-days 7 --locale "es-ES"
+
+# Specify custom git repository path
+asca rn --git-path "/path/to/repo" --locale "fr-FR"
+```
+
+**What it does:**
+1. Fetches your last **published** build from App Store Connect (READY_FOR_SALE - live in the App Store)
+2. Gets all git commits since that build was uploaded
+3. Uses OpenAI to generate localized, user-friendly release notes
+4. Displays preview with character count (won't submit to App Store)
+
+**Important:** Uses the last build that's actually **live in the App Store**, not just the most recent TestFlight build. This ensures release notes only cover changes since the last public release.
+
+**Requirements:**
+- OpenAI API key (configure with `asca config` or use `--openai-key`)
+- Git repository with commit history
+- App Store Connect credentials
+
 ### Get Help
 
 ```bash
 asca help
 asca submit --help
 asca builds --help
+asca release-notes --help
 ```
 
 ## 🔑 Setup
@@ -225,6 +290,61 @@ console.log(formatBuildInfo(builds[0]))
 
 **Returns:** `string`
 
+---
+
+### `generateAIReleaseNotes(options)` 🤖
+
+**NEW!** Automatically generates release notes from git commits using OpenAI.
+
+```typescript
+import { generateAIReleaseNotes } from '@unfoldingcx/appstoreconnect-api/ai-release-notes'
+
+const result = await generateAIReleaseNotes({
+  credentials: {
+    issuerId: 'your-issuer-id',
+    keyId: 'your-key-id',
+    privateKeyPath: './AuthKey.p8'
+  },
+  appId: 'your-app-id',
+  locale: 'pt-BR',
+  openaiApiKey: 'sk-...',
+  gitRepoPath: './',  // optional, defaults to current directory
+  sinceDays: 7        // optional, or use sinceDate
+})
+
+console.log(result.releaseNotes)
+console.log(`Based on ${result.commitCount} commits`)
+```
+
+**What it does:**
+1. Fetches your last **published** build from App Store Connect (READY_FOR_SALE - live in App Store)
+2. Gets git commits since that build's upload date
+3. Uses OpenAI to generate user-friendly, localized release notes
+
+**Note:** Fetches builds that are actually published to the App Store (not just TestFlight). If no published version exists yet, defaults to last 30 days of commits.
+
+**Parameters:**
+- `credentials` - App Store Connect JWT credentials
+- `appId` - Your app's ID
+- `locale` - Target language (supports 25+ languages)
+- `openaiApiKey` - Your OpenAI API key
+- `openaiOrgId` - OpenAI Org ID (optional)
+- `gitRepoPath` - Path to git repo (default: current directory)
+- `sinceDays` - Override: use last N days instead of last build date
+- `sinceDate` - Override: use specific date
+- `maxCommits` - Maximum commits to analyze (default: 100)
+
+**Returns:** `Promise<ReleaseNotesResult>` with:
+- `releaseNotes` - Generated text
+- `commitCount` - Number of commits analyzed
+- `sinceDate` - Date range start
+- `locale` - Target locale
+- `lastBuildVersion` - Last build version (if available)
+
+**Supported Locales:** en-US, pt-BR, es-ES, fr-FR, de-DE, it-IT, ja-JP, ko-KR, zh-CN, zh-TW, and 15+ more
+
+---
+
 ## 💡 Usage Examples
 
 ### With Environment Variables
@@ -330,6 +450,43 @@ jobs:
               locale: 'en-US'
             }).then(() => console.log('Success!')).catch(console.error);
           "
+```
+
+### AI-Powered Release Notes
+
+Automatically generate release notes from git commits:
+
+```typescript
+import { generateAIReleaseNotes } from '@unfoldingcx/appstoreconnect-api/ai-release-notes'
+import { submitToAppReview } from '@unfoldingcx/appstoreconnect-api'
+
+// Generate release notes from git commits
+const result = await generateAIReleaseNotes({
+  credentials: {
+    issuerId: process.env.ASC_ISSUER_ID!,
+    keyId: process.env.ASC_KEY_ID!,
+    privateKeyPath: './keys/AuthKey.p8'
+  },
+  appId: process.env.APP_ID!,
+  locale: 'pt-BR',
+  openaiApiKey: process.env.OPENAI_API_KEY!,
+  sinceDays: 7  // Last 7 days of commits
+})
+
+console.log('Generated notes:', result.releaseNotes)
+
+// Use the generated notes for submission
+await submitToAppReview({
+  issuerId: process.env.ASC_ISSUER_ID!,
+  keyId: process.env.ASC_KEY_ID!,
+  privateKeyPath: './keys/AuthKey.p8',
+  appId: process.env.APP_ID!,
+  buildId: 'your-build-id',
+  versionString: '1.0.0',
+  platform: 'IOS',
+  releaseNotes: result.releaseNotes,  // ← AI-generated notes
+  locale: result.locale
+})
 ```
 
 ### Error Handling

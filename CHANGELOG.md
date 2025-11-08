@@ -5,6 +5,61 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-11-08
+
+### 🎉 Major Update: AI-Powered Release Notes
+
+Added AI-powered release notes generation with OpenAI integration!
+
+### ✨ New Features
+
+- **🤖 AI Release Notes Generator** - New module for automatic release notes
+  - `generateAIReleaseNotes()` - Main function to generate notes from git commits
+  - `getLastPublishedBuild()` - Fetch last published build
+  - `getGitCommitsSince()` - Get commits using simple-git
+  - `generateReleaseNotesWithAI()` - OpenAI integration
+  - Support for 25+ languages and locales
+  - Smart analysis of commits to create user-friendly notes
+  - Character count tracking (App Store 4000 char limit)
+
+- **📝 New CLI Command: `release-notes`** (alias: `rn`)
+  - Preview AI-generated release notes in terminal
+  - `asca release-notes --locale "pt-BR"`
+  - `asca rn --since-days 7 --locale "en-US"`
+  - Beautiful colored output with statistics
+  - Works with config file, env vars, or CLI args
+
+- **🚀 Enhanced Submit Command**
+  - New `--ai-release-notes` flag to auto-generate and submit in one command
+  - `asca submit --build-id "abc" --version "1.0.0" --ai-release-notes`
+  - Generates notes, shows preview, then submits automatically
+  - Supports `--since-days` to customize date range
+  - Works with all existing submit command options
+
+- **⚙️ Enhanced Config Command**
+  - Added OpenAI API Key configuration
+  - Added OpenAI Org ID configuration (optional)
+  - API key masking in `--show` output for security
+  - Separate section for OpenAI configuration
+
+### 📚 Documentation
+
+- New `AI_RELEASE_NOTES.md` - Comprehensive guide for AI features
+- Added `examples/ai-release-notes-example.ts` - 5 complete examples
+- Updated README with AI release notes documentation
+- Added release-notes command to help text
+- Enhanced CLI help with OpenAI environment variables
+
+### 🔧 Technical
+
+- Added `src/ai-release-notes.ts` module
+- Integration with OpenAI's `gpt-4o-mini` model
+- Integration with `simple-git` for commit history
+- Full TypeScript types for all AI functions
+- Comprehensive error handling for git and OpenAI operations
+
+---
+
 ## [1.0.1] - 2025-11-08
 
 ### 🎉 CLI Release
@@ -17,11 +72,19 @@ Added a powerful command-line interface for the package!
   - `asca submit` - Submit apps to review from the terminal
   - `asca builds` - List available builds
   - `asca cancel` - Cancel pending submissions
+  - `asca config` - Interactive configuration wizard
   - `asca help` - Show help and usage information
+- **Interactive Configuration** - Save default credentials to `~/.config/asca.json`
+  - Interactive prompts with smart defaults
+  - Shows current values, press Enter to keep them
+  - Priority system: CLI args → Env vars → Config file
+  - `asca config --show` - Display current configuration
+  - `asca config --reset` - Delete configuration file
+  - Optional OpenAI API configuration for upcoming auto-release-notes feature
 - **Global Installation** - Install globally with `npm install -g @unfoldingcx/appstoreconnect-api`
 - **Environment Variable Support** - Use env vars for credentials in CLI
-- **Multiple Aliases** - Use either `asca` or `appstoreconnect-api` command
-- **Beautiful CLI Output** - Formatted help text with clear examples
+- **Multiple Aliases** - Use `asca`, `asc-api`, or `appstoreconnect-api` command
+- **Beautiful CLI Output** - Colored output with chalk, formatted help text
 
 ### 📚 Documentation
 

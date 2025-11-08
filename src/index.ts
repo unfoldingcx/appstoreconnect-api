@@ -29,9 +29,12 @@
  */
 
 import * as fs from 'fs/promises'
+import * as os from 'os'
+import * as path from 'path'
 
 import axios from 'axios'
-import * as jwt from 'jsonwebtoken'
+import pkg from 'jsonwebtoken'
+const { sign } = pkg
 
 /**
  * Configuration options for App Store Connect API authentication and submission.
@@ -119,17 +122,31 @@ const BASE_URL = 'https://api.appstoreconnect.apple.com/v1'
  * @throws {Error} If the private key file cannot be read or is invalid
  */
 async function generateJWT(options: { issuerId: string; keyId: string; privateKeyPath: string }): Promise<string> {
-  const privateKey = await fs.readFile(options.privateKeyPath, 'utf8')
+  const privateKey = await fs.readFile(options.privateKeyPath, 'utf8').catch(() => {
+    // Retry using path resolve
+    // Get the current user's home directory
+    const homeDirectory = os.homedir()
+    const resolvedPath = path.resolve(options.privateKeyPath.replace('~', homeDirectory))
+    return fs.readFile(resolvedPath, 'utf8').catch((error) => {
+      console.error('Error reading private key file:', error)
+      throw new Error('Failed to read private key file')
+    })
+  })
+
+  if (!privateKey) {
+    throw new Error('Failed to read private key file')
+  }
+
   const payload = {
     iss: options.issuerId,
     exp: Math.floor(Date.now() / 1000) + 1200, // 20 min
     aud: 'appstoreconnect-v1',
   }
-  const signOptions: jwt.SignOptions = {
-    algorithm: 'ES256',
+  const signOptions = {
+    algorithm: 'ES256' as const,
     header: { alg: 'ES256', kid: options.keyId, typ: 'JWT' },
   }
-  return jwt.sign(payload, privateKey, signOptions)
+  return sign(payload, privateKey, signOptions)
 }
 
 /**

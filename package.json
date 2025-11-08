@@ -1,7 +1,7 @@
 {
   "name": "@unfoldingcx/appstoreconnect-api",
   "version": "1.1.0",
-  "description": "A powerful TypeScript library for automating Apple App Store Connect submissions with intelligent error handling and automatic retry mechanisms",
+  "description": "A powerful TypeScript library for automating Apple App Store Connect submissions with AI-powered release notes generation, intelligent error handling, and automatic retry mechanisms",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -23,7 +23,13 @@
     "review",
     "submission",
     "testflight",
-    "typescript"
+    "typescript",
+    "ai",
+    "openai",
+    "release-notes",
+    "changelog",
+    "git",
+    "cli"
   ],
   "author": "JOAO PEDRO BARBOSA VIANA <pitter@unfolding.cx>",
   "license": "MIT",
@@ -84,6 +90,8 @@
     "chalk": "^5.6.2",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
+    "openai": "^6.8.1",
+    "simple-git": "^3.30.0",
     "util": "^0.12.5"
   }
 }
