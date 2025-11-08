@@ -1,4 +1,4 @@
-<h1 align="center"><img src="https://www.unfolding.cx/images/branding/main-rounded.png" width="200" height="200"></h1>
+<h1 align="center"><img src="https://www.unfolding.cx/images/branding/main-rounded.png" width="150" height="150"></h1>
 
 <div align="center">
   <p>
