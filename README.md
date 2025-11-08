@@ -6,9 +6,13 @@
   </p>
 </div>
 
+<div align="center">
+
 [![npm version](https://img.shields.io/npm/v/@unfoldingcx/appstoreconnect-api.svg)](https://www.npmjs.com/package/appstoreconnect-api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
+
+</div>
 
 A powerful, production-ready TypeScript library for automating Apple App Store Connect submissions. Streamline your iOS, macOS, and tvOS app deployment workflow with intelligent error handling and automatic retry mechanisms.
 
