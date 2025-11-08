@@ -35,12 +35,31 @@ export async function executeCancelOperation(
 	logs.push(`Private key starts with: ${privateKey.substring(0, 30)}...`)
 	
 	// Fix potential formatting issues with the private key
-	const formattedKey = privateKey
+	let formattedKey = privateKey
 		.replace(/\\n/g, '\n')  // Replace escaped newlines
 		.replace(/\\r/g, '')    // Remove carriage returns
 		.trim()                 // Remove extra whitespace
 	
+	// If the key doesn't have proper line breaks between header/footer and content
+	if (!formattedKey.includes('\n') || formattedKey.split('\n').length < 3) {
+		logs.push('WARNING: Private key appears to be on a single line, attempting to fix...')
+		
+		// Extract the base64 content between the markers
+		const keyMatch = formattedKey.match(/-----BEGIN PRIVATE KEY-----(.+?)-----END PRIVATE KEY-----/)
+		if (keyMatch && keyMatch[1]) {
+			const base64Content = keyMatch[1].trim()
+			
+			// Properly format with line breaks every 64 characters
+			const formattedBase64 = base64Content.match(/.{1,64}/g)?.join('\n') || base64Content
+			
+			// Reconstruct the key with proper formatting
+			formattedKey = `-----BEGIN PRIVATE KEY-----\n${formattedBase64}\n-----END PRIVATE KEY-----`
+			logs.push(`Reformatted key with proper line breaks`)
+		}
+	}
+	
 	logs.push(`Formatted key length: ${formattedKey.length} characters`)
+	logs.push(`Formatted key lines: ${formattedKey.split('\n').length}`)
 	fs.writeFileSync(keyPath, formattedKey)
 	
 	// Verify file was written

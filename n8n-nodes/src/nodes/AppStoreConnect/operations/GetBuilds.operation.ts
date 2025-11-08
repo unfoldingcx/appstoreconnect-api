@@ -40,13 +40,44 @@ export async function executeGetBuildsOperation(
 	logs.push(`Private key starts with: ${privateKey.substring(0, 30)}...`)
 	logs.push(`Private key ends with: ...${privateKey.substring(privateKey.length - 30)}`)
 	
+	// Check if the key has proper line breaks
+	const hasLineBreaks = privateKey.includes('\n')
+	logs.push(`Private key has line breaks: ${hasLineBreaks}`)
+	
 	// Fix potential formatting issues with the private key
-	const formattedKey = privateKey
+	let formattedKey = privateKey
 		.replace(/\\n/g, '\n')  // Replace escaped newlines
 		.replace(/\\r/g, '')    // Remove carriage returns
 		.trim()                 // Remove extra whitespace
 	
+	// If the key doesn't have proper line breaks between header/footer and content
+	if (!formattedKey.includes('\n') || formattedKey.split('\n').length < 3) {
+		logs.push('WARNING: Private key appears to be on a single line, attempting to fix...')
+		
+		// Extract the base64 content between the markers
+		const keyMatch = formattedKey.match(/-----BEGIN PRIVATE KEY-----(.+?)-----END PRIVATE KEY-----/)
+		if (keyMatch && keyMatch[1]) {
+			const base64Content = keyMatch[1].trim()
+			logs.push(`Extracted base64 content length: ${base64Content.length}`)
+			
+			// Properly format with line breaks every 64 characters
+			const formattedBase64 = base64Content.match(/.{1,64}/g)?.join('\n') || base64Content
+			
+			// Reconstruct the key with proper formatting
+			formattedKey = `-----BEGIN PRIVATE KEY-----\n${formattedBase64}\n-----END PRIVATE KEY-----`
+			logs.push(`Reformatted key with proper line breaks`)
+		}
+	}
+	
 	logs.push(`Formatted key length: ${formattedKey.length} characters`)
+	logs.push(`Formatted key lines: ${formattedKey.split('\n').length}`)
+	
+	// Log first few lines to verify format
+	const keyLines = formattedKey.split('\n')
+	logs.push(`First line: ${keyLines[0]}`)
+	if (keyLines.length > 1) logs.push(`Second line: ${keyLines[1].substring(0, 50)}...`)
+	if (keyLines.length > 2) logs.push(`Last line: ${keyLines[keyLines.length - 1]}`)
+	
 	fs.writeFileSync(keyPath, formattedKey)
 	
 	// Verify file was written
