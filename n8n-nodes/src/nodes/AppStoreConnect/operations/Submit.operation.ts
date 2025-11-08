@@ -1,3 +1,6 @@
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
 import {
 	IExecuteFunctions,
 	INodeExecutionData,
@@ -14,59 +17,71 @@ export async function executeSubmitOperation(
 ): Promise<INodeExecutionData[]> {
 	const credentials = await this.getCredentials('appStoreConnectApi');
 
-	// Get input parameters
-	let buildId = this.getNodeParameter('buildId', index) as string;
-	const versionString = this.getNodeParameter('versionString', index) as string;
-	const platform = this.getNodeParameter('platform', index, 'IOS') as string;
-	const locale = this.getNodeParameter('locale', index, 'en-US') as string;
-	const releaseNotes = this.getNodeParameter('releaseNotes', index, '') as string;
-	const useAiNotes = this.getNodeParameter('useAiNotes', index, false) as boolean;
+	// Write private key to temporary file
+	const tmpDir = os.tmpdir();
+	const keyPath = path.join(tmpDir, `asc-key-${Date.now()}.p8`);
+	fs.writeFileSync(keyPath, credentials.privateKey as string);
 
-	// Handle 'latest' build ID
-	if (buildId === 'latest') {
-		const builds = await getBuilds(
-			credentials.appId as string,
-			{
-				issuerId: credentials.issuerId as string,
-				keyId: credentials.keyId as string,
-				privateKeyPath: '' // Not used in n8n context
-			},
-			100
-		);
+	try {
+		// Get input parameters
+		let buildId = this.getNodeParameter('buildId', index) as string;
+		const versionString = this.getNodeParameter('versionString', index) as string;
+		const platform = this.getNodeParameter('platform', index, 'IOS') as string;
+		const locale = this.getNodeParameter('locale', index, 'en-US') as string;
+		const releaseNotes = this.getNodeParameter('releaseNotes', index, '') as string;
+		const useAiNotes = this.getNodeParameter('useAiNotes', index, false) as boolean;
 
-		const latestValidBuild = builds.find(b => b.attributes.processingState === 'VALID');
-		if (!latestValidBuild) {
-			throw new Error('No valid builds found. Cannot use "latest" without at least one valid build.');
+		// Handle 'latest' build ID
+		if (buildId === 'latest') {
+			const builds = await getBuilds(
+				credentials.appId as string,
+				{
+					issuerId: credentials.issuerId as string,
+					keyId: credentials.keyId as string,
+					privateKeyPath: keyPath
+				},
+				100
+			);
+
+			const latestValidBuild = builds.find(b => b.attributes.processingState === 'VALID');
+			if (!latestValidBuild) {
+				throw new Error('No valid builds found. Cannot use "latest" without at least one valid build.');
+			}
+			buildId = latestValidBuild.id;
 		}
-		buildId = latestValidBuild.id;
+
+		// Prepare submission parameters
+		const submitParams: AppStoreConnectOptions = {
+			issuerId: credentials.issuerId as string,
+			keyId: credentials.keyId as string,
+			privateKeyPath: keyPath,
+			appId: credentials.appId as string,
+			buildId,
+			versionString,
+			platform: platform as 'IOS' | 'MACOS' | 'TVOS',
+			locale,
+			releaseNotes: releaseNotes || 'Released via n8n',
+		};
+
+		// Execute submission
+		await submitToAppReview(submitParams);
+
+		return [
+			{
+				json: {
+					success: true,
+					message: 'Successfully submitted to App Review',
+					buildId,
+					versionString,
+					releaseNotes,
+				},
+			} as INodeExecutionData,
+		];
+	} finally {
+		// Clean up temporary key file
+		if (fs.existsSync(keyPath)) {
+			fs.unlinkSync(keyPath);
+		}
 	}
-
-	// Prepare submission parameters
-	const submitParams: AppStoreConnectOptions = {
-		issuerId: credentials.issuerId as string,
-		keyId: credentials.keyId as string,
-		privateKeyPath: '' as any, // Will use privateKeyContent instead
-		appId: credentials.appId as string,
-		buildId,
-		versionString,
-		platform: platform as 'IOS' | 'MACOS' | 'TVOS',
-		locale,
-		releaseNotes: releaseNotes || 'Released via n8n',
-	};
-
-	// Execute submission
-	await submitToAppReview(submitParams);
-
-	return [
-		{
-			json: {
-				success: true,
-				message: 'Successfully submitted to App Review',
-				buildId,
-				versionString,
-				releaseNotes,
-			},
-		} as INodeExecutionData,
-	];
 }
 
