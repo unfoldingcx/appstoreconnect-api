@@ -28,7 +28,25 @@ export async function executeCancelOperation(
 	const tmpDir = os.tmpdir()
 	const keyPath = path.join(tmpDir, `asc-key-${Date.now()}.p8`)
 	logs.push(`Writing private key to: ${keyPath}`)
-	fs.writeFileSync(keyPath, credentials.privateKey as string)
+	
+	// Check private key format
+	const privateKey = credentials.privateKey as string
+	logs.push(`Private key length: ${privateKey.length} characters`)
+	logs.push(`Private key starts with: ${privateKey.substring(0, 30)}...`)
+	
+	// Fix potential formatting issues with the private key
+	const formattedKey = privateKey
+		.replace(/\\n/g, '\n')  // Replace escaped newlines
+		.replace(/\\r/g, '')    // Remove carriage returns
+		.trim()                 // Remove extra whitespace
+	
+	logs.push(`Formatted key length: ${formattedKey.length} characters`)
+	fs.writeFileSync(keyPath, formattedKey)
+	
+	// Verify file was written
+	const fileExists = fs.existsSync(keyPath)
+	const fileSize = fileExists ? fs.statSync(keyPath).size : 0
+	logs.push(`File written: ${fileExists}, size: ${fileSize} bytes`)
 
 	try {
 		logs.push('Calling cancelPendingReviewSubmissions API...')
