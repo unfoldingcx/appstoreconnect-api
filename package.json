@@ -1,6 +1,6 @@
 {
   "name": "@unfoldingcx/appstoreconnect-api",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A powerful TypeScript library for automating Apple App Store Connect submissions with AI-powered release notes generation, intelligent error handling, and automatic retry mechanisms",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
